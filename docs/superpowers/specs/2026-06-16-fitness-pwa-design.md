@@ -1,226 +1,277 @@
-# Personal Fitness PWA Design
+# 个人健身记录 PWA 设计稿
 
-Date: 2026-06-16
+日期：2026-06-16
 
-## Goal
+## 目标
 
-Build a mobile-first personal fitness record PWA that can be deployed to a public URL and opened from any modern phone browser. The first version is for one user only, with no login, no server database, and no cloud sync. Data is stored locally on the phone and can be exported for viewing or backup.
+做一个手机优先的个人健身记录 PWA。网站需要部署到公网，手机有网络就能打开，不依赖电脑本地运行。
 
-## Product Shape
+第一版只给自己使用，不做登录、不做服务器数据库、不做云同步。数据先保存在手机本地，同时提供导出功能，方便查看、备份和以后换手机恢复。
 
-The app is a responsive PWA optimized for iPhone usage while remaining usable on Android and desktop browsers. It should be hosted publicly, such as on Cloudflare Pages or Vercel, so a phone with internet access can open it without a computer running locally.
+## 产品形态
 
-Users can add the site to the iPhone home screen and use it like a lightweight app. Offline-friendly behavior is desirable for saved app assets, but the first version does not need background sync or native health integrations.
+这是一个响应式 PWA 网站，重点适配 iPhone 使用体验，同时兼容安卓手机和电脑浏览器。
 
-## Visual Direction
+网站完成后应部署到 Cloudflare Pages、Vercel 等公网静态托管服务上，得到一个 HTTPS 网址。用户可以用 Safari 或安卓浏览器打开，也可以添加到手机主屏幕，像轻量 App 一样使用。
 
-The interface follows the provided reference image:
+第一版不接入 Apple Health、手表、后台同步或系统级健康能力。
 
-- White cards on a light gray background.
-- Orange as the primary accent color.
-- Large rounded cards and simple bottom navigation.
-- Minimal, clean UI with no marketing page.
-- Unified illustrated exercise imagery rather than photos.
-- No plan, team, feed, step count, or unrelated sports entries.
+## 视觉方向
 
-The app opens directly to the recording experience. It should feel like a personal training log, not a landing page.
+界面参考用户提供的运动小程序截图，但只保留适合本项目的部分。
 
-## Navigation
+视觉特点：
 
-Use a three-item bottom navigation:
+- 白色卡片搭配浅灰背景。
+- 橙色作为主要强调色。
+- 大圆角卡片。
+- 底部主导航。
+- 简约、干净、偏工具型。
+- 动作使用统一插画风格，不使用真实照片。
+- 打开网站直接进入记录页面，不做营销首页。
 
-- Record
-- Stats
-- Export
+明确不做：
 
-The top of each page shows only the current page title and contextual controls. Do not duplicate the same Record / Stats / Export navigation in both the header and bottom bar.
+- 计划页。
+- 团队页。
+- 动态页。
+- 今日步数。
+- 跑步、骑行、游泳、瑜伽、跳绳等无关运动入口。
 
-## Record Page
+## 页面导航
 
-The record page is date-based. It supports recording today and backfilling past dates.
+底部保留 3 个主入口：
 
-The page includes:
+- 记录。
+- 统计。
+- 导出。
 
-- Today's summary card with date, strength record count, climb duration, and body data state.
-- Backfill entry for selecting a past date and adding records.
-- Strength training section.
-- Climb section.
-- Body data section.
+顶部只显示当前页面标题和必要操作，不再重复放“记录 / 统计 / 导出”，避免和底部导航重复。
 
-### Strength Training
+## 记录页
 
-Strength training is grouped by body part:
+记录页按照日期记录。支持记录今天，也支持补录过去某一天。
 
-- Chest
-- Shoulders
-- Back
-- Arms
-- Abs
+记录页包含：
 
-Each body part contains exercise cards. Exercises come from a preset library and can also be added or deleted by the user.
+- 今日摘要卡片：日期、力量记录数量、爬坡时长、身体数据状态。
+- 补录入口：选择过去日期并添加记录。
+- 力量训练区域。
+- 爬坡有氧区域。
+- 身体数据区域。
 
-Each exercise card includes:
+### 力量训练
 
-- Exercise name.
-- Body part.
-- Unified illustrated image.
-- A control to add a new set.
-- A list or compact summary of sets for the selected date.
+力量训练按照部位分组：
 
-Each set records:
+- 胸部。
+- 肩部。
+- 背部。
+- 手臂。
+- 腹部。
 
-- Weight.
-- Reps.
-- Automatic timestamp at the moment the set is added.
+每个部位下面显示动作卡片。动作来自预设动作库，用户也可以新增或删除动作。
 
-Users should be able to delete or edit incorrectly entered sets.
+每个动作卡片包含：
 
-### Climb Cardio
+- 动作名称。
+- 所属部位。
+- 统一风格插画。
+- 添加一组的按钮。
+- 当前日期下这个动作的组数列表或简要汇总。
 
-Cardio is intentionally limited to incline climbing. It is separate from strength training.
+每一组需要记录：
 
-Each climb record includes:
+- 重量。
+- 次数。
+- 添加该组时的自动时间。
 
-- Duration.
-- Notes.
-- Automatic timestamp or date association.
+用户可以编辑或删除录错的组。
 
-No generic running, cycling, swimming, walking, yoga, jump rope, or other cardio categories are included in version one.
+### 爬坡有氧
 
-### Body Data
+有氧只做“爬坡”，并且和力量训练分开显示。
 
-Body data includes only:
+每条爬坡记录包含：
 
-- Weight.
-- Arm circumference.
-- Waist circumference.
+- 时长。
+- 备注。
+- 自动时间或所属日期。
 
-Values are associated with a date. Users can edit or replace the values for a date.
+第一版不做其他有氧分类。
 
-## Stats Page
+### 身体数据
 
-The stats page supports selecting a date range with a start date and end date.
+身体数据第一版只记录：
 
-It includes two main chart groups:
+- 体重。
+- 手臂围。
+- 腰围。
 
-### Body Trend Charts
+身体数据按日期保存。用户可以修改当天或补录日期的数据。
 
-Charts show changes over time for:
+## 统计页
 
-- Weight.
-- Arm circumference.
-- Waist circumference.
+统计页支持选择日期范围：
 
-The UI should allow quickly generating a chart for the selected date range. A combined chart is acceptable if visually clear, with distinct colors and a legend.
+- 开始日期。
+- 结束日期。
 
-### Strength Trend Charts
+选择日期范围后，可以快速生成趋势图。
 
-Users can select an exercise and generate charts over the selected date range.
+### 身体数据趋势
 
-The strength stats include:
+身体趋势图显示以下指标随时间的变化：
 
-- Max weight per date.
-- Total reps per date.
-- Total volume per date, calculated as weight times reps and summed across sets.
+- 体重。
+- 手臂围。
+- 腰围。
 
-The chart UI should make the selected exercise and metric clear. The chart visuals should be more polished than a plain line graph, using clean cards, legends, subtle grid lines, and restrained accent colors.
+可以放在一张组合折线图里，但需要图例清晰、颜色区分明显、视觉美观。
 
-## Export Page
+### 力量训练趋势
 
-The export page supports date range selection.
+用户可以选择一个动作，然后生成该动作在日期范围内的趋势图。
 
-### CSV Export
+力量统计包含：
 
-CSV is for human-readable analysis in Excel, WPS, Numbers, or similar tools.
+- 每天最大重量。
+- 每天总次数。
+- 每天总训练量。
 
-The CSV export should include:
+总训练量计算方式：
 
-- Date.
-- Record type.
-- Body part when applicable.
-- Exercise name when applicable.
-- Set index when applicable.
-- Weight when applicable.
-- Reps when applicable.
-- Set timestamp when applicable.
-- Climb duration when applicable.
-- Climb notes when applicable.
-- Body weight when applicable.
-- Arm circumference when applicable.
-- Waist circumference when applicable.
+```text
+总训练量 = 每组重量 × 每组次数，然后按日期求和
+```
 
-### JSON Backup
+统计图要比普通折线图更精致，包含：
 
-JSON is for complete backup and restore. It preserves the full local data structure, including exercises, records, sets, body data, climb entries, and metadata needed by the app.
+- 清晰标题。
+- 日期范围。
+- 指标图例。
+- 柔和网格线。
+- 美观卡片容器。
+- 橙色为主，搭配少量绿色、深蓝等辅助色，避免整页只有单一橙色。
 
-The export page includes:
+## 导出页
 
-- Export CSV.
-- Export JSON backup.
-- Import JSON backup.
+导出页支持选择导出日期范围。
 
-Import should validate the file shape before replacing or merging local data. The first version can use a clear replace flow with confirmation.
+第一版提供：
 
-## Data Storage
+- 导出 CSV 表格。
+- 导出 JSON 备份。
+- 导入 JSON 备份。
 
-Use browser local storage suited for structured local app data. IndexedDB is preferred over simple localStorage because records are structured and may grow over time.
+### CSV 表格
 
-Data entities:
+CSV 是给人查看和分析用的表格格式，可以用 Excel、WPS、Numbers 等软件打开。
 
-- Exercise: id, name, bodyPart, illustrationKey, createdAt, updatedAt, deletedAt as a nullable timestamp for soft-deleted custom exercises.
-- DailyRecord: date, strength entries, climb entries, body data, updatedAt.
-- StrengthSet: id, exerciseId, bodyPart, weight, reps, timestamp.
-- ClimbEntry: id, durationMinutes, notes, timestamp.
-- BodyMeasurement: date, weightKg, armCm, waistCm, updatedAt.
+CSV 应包含：
 
-The app should avoid server-side storage in version one.
+- 日期。
+- 记录类型。
+- 部位。
+- 动作名称。
+- 第几组。
+- 重量。
+- 次数。
+- 组记录时间。
+- 爬坡时长。
+- 爬坡备注。
+- 体重。
+- 手臂围。
+- 腰围。
 
-## Deployment
+不适用的字段可以留空。
 
-The site should be deployable to a public static hosting service such as Cloudflare Pages or Vercel.
+### JSON 备份
 
-Expected deployment result:
+JSON 是给网站自己恢复数据用的完整备份格式。
 
-- A public HTTPS URL.
-- PWA metadata and icons.
-- Mobile-friendly layout.
-- Static assets served without requiring a local computer.
+JSON 需要保留完整数据结构，包括：
 
-## Testing And Verification
+- 动作库。
+- 力量训练记录。
+- 每组数据。
+- 爬坡记录。
+- 身体数据。
+- 应用需要的元数据。
 
-The implementation should verify:
+以后换手机时，可以在旧手机导出 JSON，再在新手机打开网站导入 JSON，恢复完整记录。
 
-- The app loads on a mobile viewport.
-- Records persist after refresh.
-- Backfilled records save under the selected date.
-- Strength sets store weight, reps, and timestamp.
-- Climb records store duration and notes.
-- Body measurements store weight, arm circumference, and waist circumference.
-- Stats respect the selected date range.
-- CSV export contains expected rows.
-- JSON export can be imported to restore data.
-- The build succeeds.
+导入 JSON 时需要先检查文件格式。第一版可以采用“确认后替换本机数据”的方式，不做复杂合并。
 
-## Out Of Scope For Version One
+## 本地数据存储
 
-- User accounts.
-- Cloud sync.
-- Social features.
-- Team, plan, or feed pages.
-- Step counting.
-- Apple Health or wearable integrations.
-- App Store or native iOS release.
-- Multiple users.
-- Generic cardio categories beyond incline climbing.
+第一版不使用服务器数据库，所有数据保存在浏览器本地。
 
-## Future Extensions
+数据结构较多，优先使用 IndexedDB，而不是简单 localStorage。
 
-Possible later additions:
+核心数据实体：
 
-- Cloud backup and multi-device sync.
-- Save chart images or PDF reports.
-- More body measurements.
-- More polished exercise illustrations.
-- Training templates.
-- Progress goals.
-- Native app packaging.
+- Exercise：动作，包含 id、名称、部位、插画标识、创建时间、更新时间、删除时间。
+- DailyRecord：每日记录，包含日期、力量记录、爬坡记录、身体数据、更新时间。
+- StrengthSet：力量组，包含 id、动作 id、部位、重量、次数、记录时间。
+- ClimbEntry：爬坡记录，包含 id、时长、备注、记录时间。
+- BodyMeasurement：身体数据，包含日期、体重、手臂围、腰围、更新时间。
+
+删除自定义动作时，优先软删除，避免影响历史记录。
+
+## 部署方式
+
+网站应能部署到公网静态托管平台，例如：
+
+- Cloudflare Pages。
+- Vercel。
+
+部署后需要得到：
+
+- 公网 HTTPS 地址。
+- 可在手机浏览器打开。
+- 可添加到手机主屏幕。
+- 不依赖本地电脑运行。
+
+## 测试与验收
+
+实现后需要验证：
+
+- 手机尺寸下页面正常显示。
+- 刷新页面后记录不会丢失。
+- 补录记录会保存到选择的日期。
+- 力量训练能保存重量、次数和自动时间。
+- 爬坡能保存时长和备注。
+- 身体数据能保存体重、手臂围和腰围。
+- 统计图能按照日期范围生成。
+- 身体趋势图显示正确。
+- 力量趋势图能按动作生成重量、次数、总训练量变化。
+- CSV 导出包含预期字段。
+- JSON 导出后可以导入恢复数据。
+- 项目能成功构建。
+
+## 第一版不做
+
+以下内容不进入第一版：
+
+- 用户账号。
+- 云同步。
+- 社交功能。
+- 计划、团队、动态页面。
+- 步数统计。
+- Apple Health 或手表联动。
+- App Store 原生 iOS 应用。
+- 多用户。
+- 除爬坡以外的其他有氧项目。
+
+## 后续可扩展
+
+后续可以继续增加：
+
+- 云备份和多设备同步。
+- 图表保存为图片或 PDF。
+- 更多身体围度。
+- 更精致的动作插画。
+- 训练模板。
+- 目标设置。
+- 打包成原生 App。
