@@ -4,6 +4,7 @@ import { useFitnessData } from './hooks/useFitnessData';
 import { getTodayKey } from './lib/date';
 import type { PageId } from './lib/types';
 import { RecordPage } from './pages/RecordPage';
+import { StatsPage } from './pages/StatsPage';
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -22,7 +23,7 @@ export default function App() {
 
   return (
     <main className="app-shell">
-      {activePage === 'record' ? (
+      {activePage === 'record' && (
         <RecordPage
           date={selectedDate}
           exercises={exercises}
@@ -33,9 +34,9 @@ export default function App() {
           onAddClimbEntry={actions.addClimbEntry}
           onSaveBodyMeasurement={actions.saveBodyMeasurement}
         />
-      ) : (
-        <PlaceholderPage title={activePage === 'stats' ? '统计' : '导出'} />
       )}
+      {activePage === 'stats' && <StatsPage records={records} exercises={exercises} />}
+      {activePage === 'export' && <PlaceholderPage title="导出" />}
       <BottomNav activePage={activePage} onChange={setActivePage} />
     </main>
   );
