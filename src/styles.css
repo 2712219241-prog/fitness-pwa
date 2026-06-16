@@ -26,9 +26,278 @@ select {
 }
 
 .app-shell {
+  position: relative;
   min-height: 100vh;
   max-width: 480px;
   margin: 0 auto;
   background: #f8f7f3;
-  padding: 24px;
+  box-shadow: 0 0 40px rgba(21, 18, 15, 0.08);
+}
+
+.page {
+  min-height: 100vh;
+  padding: 20px 18px 104px;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.page-header h1 {
+  margin: 0;
+  color: #101010;
+  font-size: 32px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: 0;
+  border-bottom: 4px solid #f47416;
+  padding-bottom: 8px;
+}
+
+.bottom-nav {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: min(480px, 100%);
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.96);
+  border-top: 1px solid #ece9e2;
+  padding: 8px max(12px, env(safe-area-inset-left)) max(8px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-right));
+}
+
+.bottom-nav button {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  border: 0;
+  background: transparent;
+  color: #96918a;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 8px 0;
+}
+
+.bottom-nav button.active {
+  color: #f47416;
+}
+
+.summary-card,
+.plain-card,
+.feature-card,
+.exercise-card {
+  background: #fff;
+  border-radius: 22px;
+  box-shadow: 0 12px 28px rgba(48, 43, 35, 0.08);
+}
+
+.summary-card {
+  padding: 18px;
+}
+
+.summary-title,
+.feature-card,
+.exercise-card,
+.record-toolbar,
+.record-toolbar label {
+  display: flex;
+  align-items: center;
+}
+
+.summary-title {
+  justify-content: space-between;
+  gap: 10px;
+  color: #777;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.summary-title strong {
+  flex: 1;
+  color: #15120f;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #eceae5;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #f0ece4;
+  text-align: center;
+}
+
+.summary-grid > div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.summary-grid > div + div {
+  border-left: 1px solid #eee9df;
+}
+
+.summary-grid b {
+  font-size: 36px;
+  line-height: 1;
+}
+
+.summary-grid span,
+.summary-grid small {
+  color: #8f887e;
+}
+
+.summary-grid button {
+  border: 0;
+  background: transparent;
+  color: #f47416;
+  font-weight: 900;
+}
+
+.record-toolbar {
+  justify-content: flex-end;
+  margin: 18px 0 12px;
+}
+
+.record-toolbar label {
+  gap: 8px;
+  color: #f47416;
+  font-weight: 900;
+}
+
+.record-toolbar input {
+  max-width: 136px;
+  border: 1px solid #f2a15a;
+  border-radius: 12px;
+  padding: 8px;
+  color: #15120f;
+  background: #fff;
+}
+
+.feature-card {
+  gap: 14px;
+  padding: 16px;
+  border: 1.5px solid #f2a15a;
+  color: #15120f;
+}
+
+.feature-card h2,
+.plain-card h2,
+.exercise-card h3 {
+  margin: 0;
+}
+
+.feature-card p,
+.plain-card p,
+.exercise-card p {
+  margin: 4px 0 0;
+  color: #8f887e;
+}
+
+.feature-card svg:last-child {
+  margin-left: auto;
+  color: #f47416;
+}
+
+.feature-icon,
+.tile-illustration,
+.exercise-art {
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  background: #fff2e8;
+  color: #f47416;
+  font-weight: 900;
+}
+
+.feature-icon {
+  width: 64px;
+  height: 64px;
+  font-size: 28px;
+}
+
+.tile-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.icon-tile {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  min-height: 116px;
+  border: 0;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 10px 24px rgba(48, 43, 35, 0.08);
+  font-weight: 900;
+}
+
+.tile-illustration {
+  width: 54px;
+  height: 54px;
+  font-size: 24px;
+}
+
+.card-list {
+  display: grid;
+  gap: 10px;
+}
+
+.exercise-card {
+  gap: 12px;
+  padding: 12px;
+}
+
+.exercise-card > div:nth-child(2) {
+  flex: 1;
+}
+
+.exercise-card button {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid #f2a15a;
+  border-radius: 50%;
+  color: #f47416;
+  background: #fff;
+}
+
+.exercise-art {
+  width: 56px;
+  height: 56px;
+}
+
+.plain-card {
+  margin-top: 14px;
+  padding: 16px;
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.metric-grid span {
+  border-radius: 14px;
+  background: #f7f4ef;
+  padding: 12px;
+  text-align: center;
+  font-weight: 850;
 }
