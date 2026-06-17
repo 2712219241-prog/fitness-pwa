@@ -3,6 +3,7 @@ import { BottomNav } from './components/BottomNav';
 import { useFitnessData } from './hooks/useFitnessData';
 import { getTodayKey } from './lib/date';
 import type { PageId } from './lib/types';
+import { ExportPage } from './pages/ExportPage';
 import { RecordPage } from './pages/RecordPage';
 import { StatsPage } from './pages/StatsPage';
 
@@ -36,7 +37,7 @@ export default function App() {
         />
       )}
       {activePage === 'stats' && <StatsPage records={records} exercises={exercises} />}
-      {activePage === 'export' && <PlaceholderPage title="导出" />}
+      {activePage === 'export' && <ExportPage records={records} exercises={exercises} onImportBackup={actions.replaceAll} />}
       <BottomNav activePage={activePage} onChange={setActivePage} />
     </main>
   );

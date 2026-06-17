@@ -380,3 +380,66 @@ select {
   padding: 8px;
   margin-top: 12px;
 }
+
+.export-card {
+  display: grid;
+  gap: 12px;
+  background: #fff;
+  border-radius: 22px;
+  box-shadow: 0 12px 28px rgba(48, 43, 35, 0.08);
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+.export-card.highlighted {
+  border: 1px solid #f4dac7;
+}
+
+.export-card h2 {
+  margin: 0;
+  font-size: 21px;
+}
+
+.export-card p {
+  margin: 4px 0 0;
+  color: #8f887e;
+  line-height: 1.45;
+}
+
+.export-icon {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  background: #fff2e8;
+  color: #f47416;
+  font-size: 25px;
+  font-weight: 900;
+}
+
+.export-icon.backup {
+  background: #eef6f4;
+  color: #1f7567;
+}
+
+.export-card button,
+.file-button {
+  border: 0;
+  border-radius: 15px;
+  background: #f47416;
+  color: #fff;
+  padding: 12px;
+  text-align: center;
+  font-weight: 880;
+}
+
+.export-card:not(.highlighted) button,
+.file-button {
+  background: #f7f4ef;
+  color: #4f4740;
+}
+
+.file-button input {
+  display: none;
+}
