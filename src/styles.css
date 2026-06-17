@@ -102,7 +102,7 @@ select {
 
 .summary-title,
 .feature-card,
-.exercise-card,
+.exercise-card-top,
 .record-toolbar,
 .record-toolbar label {
   display: flex;
@@ -258,15 +258,56 @@ select {
 }
 
 .exercise-card {
+  display: grid;
   gap: 12px;
   padding: 12px;
 }
 
-.exercise-card > div:nth-child(2) {
+.exercise-card-top {
+  gap: 12px;
+}
+
+.exercise-card-top > div:nth-child(2) {
   flex: 1;
 }
 
-.exercise-card button {
+.set-entry-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 42px;
+  gap: 8px;
+  align-items: end;
+}
+
+.set-entry-grid label,
+.form-grid label,
+.metric-grid label {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.set-entry-grid label span,
+.form-grid label span,
+.metric-grid label span {
+  color: #8f887e;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.set-entry-grid input,
+.form-grid input,
+.metric-grid input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  border-radius: 12px;
+  background: #f8f6f1;
+  color: #15120f;
+  padding: 10px;
+  font-weight: 800;
+}
+
+.set-entry-grid button {
   display: grid;
   place-items: center;
   width: 42px;
@@ -287,6 +328,20 @@ select {
   padding: 16px;
 }
 
+.form-grid {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.climb-form {
+  grid-template-columns: 0.7fr 1fr;
+}
+
+.climb-form button {
+  grid-column: 1 / -1;
+}
+
 .metric-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -294,11 +349,59 @@ select {
   margin-top: 12px;
 }
 
-.metric-grid span {
+.metric-grid label {
   border-radius: 14px;
   background: #f7f4ef;
   padding: 12px;
   text-align: center;
+  font-weight: 850;
+}
+
+.metric-grid input {
+  text-align: center;
+  background: #fff;
+}
+
+.primary-action,
+.climb-form button {
+  width: 100%;
+  margin-top: 12px;
+  border: 0;
+  border-radius: 15px;
+  background: #f47416;
+  color: #fff;
+  padding: 12px;
+  font-weight: 880;
+}
+
+.set-list {
+  display: grid;
+  gap: 6px;
+}
+
+.set-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  gap: 8px;
+  align-items: center;
+  border-radius: 12px;
+  background: #f8f6f1;
+  padding: 8px 10px;
+  color: #625b52;
+  font-size: 12px;
+}
+
+.set-row strong {
+  color: #15120f;
+}
+
+.set-row button {
+  border: 0;
+  border-radius: 10px;
+  background: #fff;
+  color: #f47416;
+  padding: 6px 8px;
+  font-size: 12px;
   font-weight: 850;
 }
 

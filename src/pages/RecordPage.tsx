@@ -21,21 +21,57 @@ export function RecordPage({
   exercises,
   records,
   onDateChange,
-  onAddStrengthSet
+  onAddStrengthSet,
+  onDeleteStrengthSet,
+  onAddClimbEntry,
+  onSaveBodyMeasurement
 }: RecordPageProps) {
   const [selectedPart, setSelectedPart] = useState<BodyPart>('chest');
+  const [strengthDrafts, setStrengthDrafts] = useState<Record<string, { weight: string; reps: string }>>({});
+  const [climbDuration, setClimbDuration] = useState('');
+  const [climbNotes, setClimbNotes] = useState('');
+  const [weightKg, setWeightKg] = useState('');
+  const [armCm, setArmCm] = useState('');
+  const [waistCm, setWaistCm] = useState('');
   const record = records.find((item) => item.date === date);
   const strengthCount = record?.strengthSets.length ?? 0;
   const climbMinutes = record?.climbEntries.reduce((sum, entry) => sum + entry.durationMinutes, 0) ?? 0;
   const selectedExercises = useMemo(() => exercises.filter((exercise) => exercise.bodyPart === selectedPart), [exercises, selectedPart]);
 
   async function quickAddSet(exercise: Exercise) {
+    const draft = strengthDrafts[exercise.id] ?? { weight: '', reps: '' };
+    const weight = Number(draft.weight);
+    const reps = Number(draft.reps);
+    if (!Number.isFinite(weight) || !Number.isFinite(reps) || weight <= 0 || reps <= 0) return;
     await onAddStrengthSet(date, {
       exerciseId: exercise.id,
       bodyPart: exercise.bodyPart,
-      weight: 0,
-      reps: 0,
+      weight,
+      reps,
       timestamp: new Date().toISOString()
+    });
+    setStrengthDrafts((current) => ({ ...current, [exercise.id]: { weight: '', reps: '' } }));
+  }
+
+  async function saveClimb() {
+    const durationMinutes = Number(climbDuration);
+    if (!Number.isFinite(durationMinutes) || durationMinutes <= 0) return;
+    await onAddClimbEntry(date, {
+      durationMinutes,
+      notes: climbNotes.trim(),
+      timestamp: new Date().toISOString()
+    });
+    setClimbDuration('');
+    setClimbNotes('');
+  }
+
+  async function saveBodyData() {
+    await onSaveBodyMeasurement({
+      date,
+      weightKg: weightKg === '' ? null : Number(weightKg),
+      armCm: armCm === '' ? null : Number(armCm),
+      waistCm: waistCm === '' ? null : Number(waistCm),
+      updatedAt: new Date().toISOString()
     });
   }
 
@@ -95,14 +131,66 @@ export function RecordPage({
       <section className="card-list">
         {selectedExercises.map((exercise) => (
           <article className="exercise-card" key={exercise.id}>
-            <div className="exercise-art">{exercise.name.slice(0, 1)}</div>
-            <div>
-              <h3>{exercise.name}</h3>
-              <p>{BODY_PARTS.find((part) => part.id === exercise.bodyPart)?.label}</p>
+            <div className="exercise-card-top">
+              <div className="exercise-art">{exercise.name.slice(0, 1)}</div>
+              <div>
+                <h3>{exercise.name}</h3>
+                <p>{BODY_PARTS.find((part) => part.id === exercise.bodyPart)?.label}</p>
+              </div>
             </div>
-            <button type="button" aria-label={`添加${exercise.name}一组`} onClick={() => void quickAddSet(exercise)}>
-              <Plus aria-hidden="true" />
-            </button>
+            <div className="set-entry-grid">
+              <label>
+                <span>重量</span>
+                <input
+                  aria-label={`${exercise.name}重量`}
+                  inputMode="decimal"
+                  type="number"
+                  min="0"
+                  placeholder="kg"
+                  value={strengthDrafts[exercise.id]?.weight ?? ''}
+                  onChange={(event) =>
+                    setStrengthDrafts((current) => ({
+                      ...current,
+                      [exercise.id]: { weight: event.target.value, reps: current[exercise.id]?.reps ?? '' }
+                    }))
+                  }
+                />
+              </label>
+              <label>
+                <span>次数</span>
+                <input
+                  aria-label={`${exercise.name}次数`}
+                  inputMode="numeric"
+                  type="number"
+                  min="0"
+                  placeholder="次"
+                  value={strengthDrafts[exercise.id]?.reps ?? ''}
+                  onChange={(event) =>
+                    setStrengthDrafts((current) => ({
+                      ...current,
+                      [exercise.id]: { weight: current[exercise.id]?.weight ?? '', reps: event.target.value }
+                    }))
+                  }
+                />
+              </label>
+              <button type="button" aria-label={`添加${exercise.name}一组`} onClick={() => void quickAddSet(exercise)}>
+                <Plus aria-hidden="true" size={18} />
+              </button>
+            </div>
+            <div className="set-list">
+              {(record?.strengthSets.filter((set) => set.exerciseId === exercise.id) ?? []).map((set, index) => (
+                <div className="set-row" key={set.id}>
+                  <span>第{index + 1}组</span>
+                  <strong>
+                    {set.weight}kg x {set.reps}
+                  </strong>
+                  <small>{new Date(set.timestamp).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}</small>
+                  <button type="button" onClick={() => void onDeleteStrengthSet(date, set.id)}>
+                    删除
+                  </button>
+                </div>
+              ))}
+            </div>
           </article>
         ))}
       </section>
@@ -110,15 +198,49 @@ export function RecordPage({
       <section className="plain-card">
         <h2>爬坡</h2>
         <p>记录时长和备注。</p>
+        <div className="form-grid climb-form">
+          <label>
+            <span>时长</span>
+            <input aria-label="爬坡时长" inputMode="decimal" type="number" min="0" placeholder="分钟" value={climbDuration} onChange={(event) => setClimbDuration(event.target.value)} />
+          </label>
+          <label>
+            <span>备注</span>
+            <input aria-label="爬坡备注" type="text" placeholder="坡度、速度等" value={climbNotes} onChange={(event) => setClimbNotes(event.target.value)} />
+          </label>
+          <button type="button" onClick={() => void saveClimb()}>
+            保存爬坡
+          </button>
+        </div>
+        <div className="set-list">
+          {(record?.climbEntries ?? []).map((entry) => (
+            <div className="set-row" key={entry.id}>
+              <span>{entry.durationMinutes}分钟</span>
+              <strong>{entry.notes || '无备注'}</strong>
+              <small>{new Date(entry.timestamp).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}</small>
+            </div>
+          ))}
+        </div>
       </section>
 
       <section className="plain-card">
         <h2>身体数据</h2>
         <div className="metric-grid">
-          <span>体重 kg</span>
-          <span>手臂 cm</span>
-          <span>腰围 cm</span>
+          <label>
+            <span>体重</span>
+            <input aria-label="体重" inputMode="decimal" type="number" min="0" placeholder="kg" value={weightKg} onChange={(event) => setWeightKg(event.target.value)} />
+          </label>
+          <label>
+            <span>手臂</span>
+            <input aria-label="手臂围" inputMode="decimal" type="number" min="0" placeholder="cm" value={armCm} onChange={(event) => setArmCm(event.target.value)} />
+          </label>
+          <label>
+            <span>腰围</span>
+            <input aria-label="腰围" inputMode="decimal" type="number" min="0" placeholder="cm" value={waistCm} onChange={(event) => setWaistCm(event.target.value)} />
+          </label>
         </div>
+        <button className="primary-action" type="button" onClick={() => void saveBodyData()}>
+          保存身体数据
+        </button>
       </section>
     </section>
   );

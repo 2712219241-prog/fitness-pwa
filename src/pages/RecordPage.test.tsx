@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { DEFAULT_EXERCISES } from '../lib/defaultExercises';
 import type { DailyRecord } from '../lib/types';
@@ -24,5 +25,77 @@ describe('RecordPage', () => {
     expect(screen.getByRole('button', { name: '胸部' })).toBeInTheDocument();
     expect(screen.getByText('爬坡')).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: '身体数据' })).toBeInTheDocument();
+  });
+
+  it('submits weight and reps for a strength set', async () => {
+    const onAddStrengthSet = vi.fn();
+    render(
+      <RecordPage
+        date="2026-06-16"
+        exercises={DEFAULT_EXERCISES}
+        records={[]}
+        onDateChange={vi.fn()}
+        onAddStrengthSet={onAddStrengthSet}
+        onDeleteStrengthSet={vi.fn()}
+        onAddClimbEntry={vi.fn()}
+        onSaveBodyMeasurement={vi.fn()}
+      />
+    );
+
+    await userEvent.type(screen.getByLabelText('哑铃卧推重量'), '30');
+    await userEvent.type(screen.getByLabelText('哑铃卧推次数'), '8');
+    await userEvent.click(screen.getByRole('button', { name: '添加哑铃卧推一组' }));
+
+    expect(onAddStrengthSet).toHaveBeenCalledWith('2026-06-16', expect.objectContaining({ weight: 30, reps: 8 }));
+  });
+
+  it('submits climb duration and notes', async () => {
+    const onAddClimbEntry = vi.fn();
+    render(
+      <RecordPage
+        date="2026-06-16"
+        exercises={DEFAULT_EXERCISES}
+        records={[]}
+        onDateChange={vi.fn()}
+        onAddStrengthSet={vi.fn()}
+        onDeleteStrengthSet={vi.fn()}
+        onAddClimbEntry={onAddClimbEntry}
+        onSaveBodyMeasurement={vi.fn()}
+      />
+    );
+
+    await userEvent.type(screen.getByLabelText('爬坡时长'), '35');
+    await userEvent.type(screen.getByLabelText('爬坡备注'), '坡度12');
+    await userEvent.click(screen.getByRole('button', { name: '保存爬坡' }));
+
+    expect(onAddClimbEntry).toHaveBeenCalledWith('2026-06-16', expect.objectContaining({ durationMinutes: 35, notes: '坡度12' }));
+  });
+
+  it('submits body measurements', async () => {
+    const onSaveBodyMeasurement = vi.fn();
+    render(
+      <RecordPage
+        date="2026-06-16"
+        exercises={DEFAULT_EXERCISES}
+        records={[]}
+        onDateChange={vi.fn()}
+        onAddStrengthSet={vi.fn()}
+        onDeleteStrengthSet={vi.fn()}
+        onAddClimbEntry={vi.fn()}
+        onSaveBodyMeasurement={onSaveBodyMeasurement}
+      />
+    );
+
+    await userEvent.type(screen.getByLabelText('体重'), '78.5');
+    await userEvent.type(screen.getByLabelText('手臂围'), '35');
+    await userEvent.type(screen.getByLabelText('腰围'), '86');
+    await userEvent.click(screen.getByRole('button', { name: '保存身体数据' }));
+
+    expect(onSaveBodyMeasurement).toHaveBeenCalledWith(expect.objectContaining({
+      date: '2026-06-16',
+      weightKg: 78.5,
+      armCm: 35,
+      waistCm: 86
+    }));
   });
 });
