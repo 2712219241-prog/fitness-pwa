@@ -422,6 +422,7 @@ select {
 .range-grid label {
   display: grid;
   gap: 6px;
+  min-width: 0;
   padding: 12px;
 }
 
@@ -433,6 +434,7 @@ select {
 .range-grid input,
 .chart-card select {
   width: 100%;
+  min-width: 0;
   border: 0;
   background: #f8f6f1;
   border-radius: 12px;
