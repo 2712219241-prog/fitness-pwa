@@ -9,6 +9,6 @@ describe('App shell', () => {
     expect(screen.getByRole('heading', { name: '记录' })).toBeInTheDocument();
     expect(screen.getAllByRole('button', { name: '统计' })).toHaveLength(1);
     await userEvent.click(screen.getByRole('button', { name: '统计' }));
-    expect(screen.getByRole('heading', { name: '统计' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: '统计' })).toBeInTheDocument();
   });
 });
