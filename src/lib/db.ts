@@ -28,6 +28,7 @@ function emptyRecord(date: string, now: string): DailyRecord {
     strengthSets: [],
     climbEntries: [],
     bodyMeasurement: null,
+    dailyNote: '',
     updatedAt: now
   };
 }
@@ -91,6 +92,13 @@ export function createFitnessRepository(dbName = 'fitness-pwa') {
     async saveBodyMeasurement(measurement: BodyMeasurement) {
       const record = await getOrCreateRecord(measurement.date, measurement.updatedAt);
       const next = { ...record, bodyMeasurement: measurement, updatedAt: measurement.updatedAt };
+      await db.dailyRecords.put(next);
+      return next;
+    },
+    async saveDailyNote(date: string, dailyNote: string) {
+      const now = new Date().toISOString();
+      const record = await getOrCreateRecord(date, now);
+      const next = { ...record, dailyNote, updatedAt: now };
       await db.dailyRecords.put(next);
       return next;
     },

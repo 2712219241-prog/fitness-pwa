@@ -374,6 +374,35 @@ select {
   font-weight: 880;
 }
 
+.memo-card {
+  margin-top: 14px;
+}
+
+.memo-field {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.memo-field span,
+.daily-view-date span {
+  color: #8f887e;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.memo-field textarea {
+  width: 100%;
+  min-height: 118px;
+  resize: vertical;
+  border: 0;
+  border-radius: 16px;
+  background: #f8f6f1;
+  color: #15120f;
+  line-height: 1.5;
+  padding: 13px;
+}
+
 .set-list {
   display: grid;
   gap: 6px;
@@ -484,6 +513,87 @@ select {
   background: linear-gradient(180deg, #fffbf7, #f8f7f3);
   padding: 8px;
   margin-top: 12px;
+}
+
+.daily-record-card {
+  display: grid;
+  gap: 12px;
+}
+
+.daily-view-date {
+  display: grid;
+  gap: 6px;
+}
+
+.daily-view-date input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  background: #f8f6f1;
+  border-radius: 12px;
+  padding: 10px;
+  font-weight: 800;
+  color: #15120f;
+}
+
+.daily-detail-list {
+  display: grid;
+  gap: 12px;
+}
+
+.daily-detail-list section {
+  display: grid;
+  gap: 8px;
+  border-radius: 16px;
+  background: #fbfaf6;
+  padding: 12px;
+}
+
+.daily-detail-list h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.daily-detail-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 10px;
+  align-items: center;
+  border-top: 1px solid #eee9df;
+  padding-top: 8px;
+}
+
+.daily-detail-row span,
+.daily-detail-row strong {
+  min-width: 0;
+}
+
+.daily-detail-row small {
+  grid-column: 1 / -1;
+  color: #8f887e;
+}
+
+.daily-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.daily-metrics span {
+  border-radius: 14px;
+  background: #fff;
+  padding: 10px 8px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.daily-note-text,
+.empty-text {
+  margin: 0;
+  color: #6e675f;
+  line-height: 1.5;
+  white-space: pre-wrap;
 }
 
 .export-card {

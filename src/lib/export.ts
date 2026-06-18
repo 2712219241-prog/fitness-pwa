@@ -15,7 +15,8 @@ const CSV_HEADER = [
   '爬坡备注',
   '体重',
   '手臂围',
-  '腰围'
+  '腰围',
+  '每日想说的话'
 ];
 
 function csvCell(value: string | number | null | undefined): string {
@@ -48,12 +49,13 @@ export function buildCsv(records: DailyRecord[], exercises: Exercise[], startDat
         '',
         '',
         '',
+        '',
         ''
       ]);
     });
 
     for (const climb of record.climbEntries) {
-      rows.push([record.date, '爬坡', '', '', '', '', '', '', climb.durationMinutes, climb.notes, '', '', '']);
+      rows.push([record.date, '爬坡', '', '', '', '', '', '', climb.durationMinutes, climb.notes, '', '', '', '']);
     }
 
     if (record.bodyMeasurement) {
@@ -70,8 +72,13 @@ export function buildCsv(records: DailyRecord[], exercises: Exercise[], startDat
         '',
         record.bodyMeasurement.weightKg,
         record.bodyMeasurement.armCm,
-        record.bodyMeasurement.waistCm
+        record.bodyMeasurement.waistCm,
+        ''
       ]);
+    }
+
+    if (record.dailyNote?.trim()) {
+      rows.push([record.date, '每日想说的话', '', '', '', '', '', '', '', '', '', '', '', record.dailyNote]);
     }
   }
 

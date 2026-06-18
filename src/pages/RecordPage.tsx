@@ -1,5 +1,5 @@
 import { CalendarDays, ChevronRight, Plus } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { IconTile } from '../components/IconTile';
 import { BODY_PARTS } from '../lib/defaultExercises';
 import { formatChineseDate } from '../lib/date';
@@ -14,6 +14,8 @@ interface RecordPageProps {
   onDeleteStrengthSet: (date: string, setId: string) => Promise<void> | void;
   onAddClimbEntry: (date: string, entry: Omit<ClimbEntry, 'id'>) => Promise<void> | void;
   onSaveBodyMeasurement: (measurement: BodyMeasurement) => Promise<void> | void;
+  onSaveDailyNote: (date: string, dailyNote: string) => Promise<void> | void;
+  maxDate: string;
 }
 
 export function RecordPage({
@@ -24,7 +26,9 @@ export function RecordPage({
   onAddStrengthSet,
   onDeleteStrengthSet,
   onAddClimbEntry,
-  onSaveBodyMeasurement
+  onSaveBodyMeasurement,
+  onSaveDailyNote,
+  maxDate
 }: RecordPageProps) {
   const [selectedPart, setSelectedPart] = useState<BodyPart>('chest');
   const [strengthDrafts, setStrengthDrafts] = useState<Record<string, { weight: string; reps: string }>>({});
@@ -34,9 +38,14 @@ export function RecordPage({
   const [armCm, setArmCm] = useState('');
   const [waistCm, setWaistCm] = useState('');
   const record = records.find((item) => item.date === date);
+  const [dailyNote, setDailyNote] = useState(record?.dailyNote ?? '');
   const strengthCount = record?.strengthSets.length ?? 0;
   const climbMinutes = record?.climbEntries.reduce((sum, entry) => sum + entry.durationMinutes, 0) ?? 0;
   const selectedExercises = useMemo(() => exercises.filter((exercise) => exercise.bodyPart === selectedPart), [exercises, selectedPart]);
+
+  useEffect(() => {
+    setDailyNote(record?.dailyNote ?? '');
+  }, [date, record?.dailyNote]);
 
   async function quickAddSet(exercise: Exercise) {
     const draft = strengthDrafts[exercise.id] ?? { weight: '', reps: '' };
@@ -75,6 +84,10 @@ export function RecordPage({
     });
   }
 
+  async function saveDailyNoteText() {
+    await onSaveDailyNote(date, dailyNote);
+  }
+
   return (
     <section className="page record-page">
       <header className="page-header">
@@ -109,7 +122,7 @@ export function RecordPage({
         <label>
           <CalendarDays size={18} aria-hidden="true" />
           <span>补录</span>
-          <input aria-label="补录日期" type="date" value={date} onChange={(event) => onDateChange(event.target.value)} />
+          <input aria-label="补录日期" type="date" value={date} max={maxDate} onChange={(event) => onDateChange(event.target.value)} />
         </label>
       </div>
 
@@ -240,6 +253,24 @@ export function RecordPage({
         </div>
         <button className="primary-action" type="button" onClick={() => void saveBodyData()}>
           保存身体数据
+        </button>
+      </section>
+
+      <section className="plain-card memo-card">
+        <h2>每日想说的话</h2>
+        <p>写下今天的训练感受、状态或想提醒自己的事。</p>
+        <label className="memo-field">
+          <span>内容</span>
+          <textarea
+            aria-label="每日想说的话"
+            rows={5}
+            placeholder="今天想说点什么..."
+            value={dailyNote}
+            onChange={(event) => setDailyNote(event.target.value)}
+          />
+        </label>
+        <button className="primary-action" type="button" onClick={() => void saveDailyNoteText()}>
+          保存想说的话
         </button>
       </section>
     </section>

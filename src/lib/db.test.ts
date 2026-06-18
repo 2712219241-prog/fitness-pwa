@@ -29,4 +29,13 @@ describe('fitness repository', () => {
     expect(records[0].strengthSets[0].weight).toBe(30);
     repo.close();
   });
+
+  it('saves a daily note under the selected date', async () => {
+    const repo = createFitnessRepository('fitness-test');
+    await repo.saveDailyNote('2026-06-16', '今天状态很好，卧推有进步。');
+    const records = await repo.listDailyRecords();
+    expect(records[0].date).toBe('2026-06-16');
+    expect(records[0].dailyNote).toBe('今天状态很好，卧推有进步。');
+    repo.close();
+  });
 });

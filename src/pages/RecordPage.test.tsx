@@ -18,13 +18,16 @@ describe('RecordPage', () => {
         onDeleteStrengthSet={vi.fn()}
         onAddClimbEntry={vi.fn()}
         onSaveBodyMeasurement={vi.fn()}
+        onSaveDailyNote={vi.fn()}
+        maxDate="2026-06-18"
       />
     );
     expect(screen.getByText('今天还没记录')).toBeInTheDocument();
-    expect(screen.getByLabelText('补录日期')).toBeInTheDocument();
+    expect(screen.getByLabelText('补录日期')).toHaveAttribute('max', '2026-06-18');
     expect(screen.getByRole('button', { name: '胸部' })).toBeInTheDocument();
     expect(screen.getByText('爬坡')).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: '身体数据' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: '每日想说的话' })).toBeInTheDocument();
   });
 
   it('submits weight and reps for a strength set', async () => {
@@ -39,6 +42,8 @@ describe('RecordPage', () => {
         onDeleteStrengthSet={vi.fn()}
         onAddClimbEntry={vi.fn()}
         onSaveBodyMeasurement={vi.fn()}
+        onSaveDailyNote={vi.fn()}
+        maxDate="2026-06-18"
       />
     );
 
@@ -61,6 +66,8 @@ describe('RecordPage', () => {
         onDeleteStrengthSet={vi.fn()}
         onAddClimbEntry={onAddClimbEntry}
         onSaveBodyMeasurement={vi.fn()}
+        onSaveDailyNote={vi.fn()}
+        maxDate="2026-06-18"
       />
     );
 
@@ -83,6 +90,8 @@ describe('RecordPage', () => {
         onDeleteStrengthSet={vi.fn()}
         onAddClimbEntry={vi.fn()}
         onSaveBodyMeasurement={onSaveBodyMeasurement}
+        onSaveDailyNote={vi.fn()}
+        maxDate="2026-06-18"
       />
     );
 
@@ -97,5 +106,28 @@ describe('RecordPage', () => {
       armCm: 35,
       waistCm: 86
     }));
+  });
+
+  it('submits the daily note text', async () => {
+    const onSaveDailyNote = vi.fn();
+    render(
+      <RecordPage
+        date="2026-06-16"
+        exercises={DEFAULT_EXERCISES}
+        records={[]}
+        onDateChange={vi.fn()}
+        onAddStrengthSet={vi.fn()}
+        onDeleteStrengthSet={vi.fn()}
+        onAddClimbEntry={vi.fn()}
+        onSaveBodyMeasurement={vi.fn()}
+        onSaveDailyNote={onSaveDailyNote}
+        maxDate="2026-06-18"
+      />
+    );
+
+    await userEvent.type(screen.getByLabelText('每日想说的话'), '今天训练状态很好。');
+    await userEvent.click(screen.getByRole('button', { name: '保存想说的话' }));
+
+    expect(onSaveDailyNote).toHaveBeenCalledWith('2026-06-16', '今天训练状态很好。');
   });
 });

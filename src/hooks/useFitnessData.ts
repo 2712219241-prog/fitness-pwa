@@ -38,6 +38,10 @@ export function useFitnessData() {
         await repository.saveBodyMeasurement(measurement);
         await refresh();
       },
+      async saveDailyNote(date: string, dailyNote: string) {
+        await repository.saveDailyNote(date, dailyNote);
+        await refresh();
+      },
       async replaceAll(nextExercises: Exercise[], nextRecords: DailyRecord[]) {
         await repository.replaceAll(nextExercises, nextRecords);
         await refresh();

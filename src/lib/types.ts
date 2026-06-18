@@ -40,6 +40,7 @@ export interface DailyRecord {
   strengthSets: StrengthSet[];
   climbEntries: ClimbEntry[];
   bodyMeasurement: BodyMeasurement | null;
+  dailyNote?: string;
   updatedAt: string;
 }
 

@@ -20,8 +20,9 @@ function LoadingPage({ title }: { title: string }) {
 }
 
 export default function App() {
+  const today = getTodayKey();
   const [activePage, setActivePage] = useState<PageId>('record');
-  const [selectedDate, setSelectedDate] = useState(getTodayKey());
+  const [selectedDate, setSelectedDate] = useState(today);
   const { exercises, records, actions } = useFitnessData();
 
   return (
@@ -36,6 +37,8 @@ export default function App() {
           onDeleteStrengthSet={actions.deleteStrengthSet}
           onAddClimbEntry={actions.addClimbEntry}
           onSaveBodyMeasurement={actions.saveBodyMeasurement}
+          onSaveDailyNote={actions.saveDailyNote}
+          maxDate={today}
         />
       )}
       {activePage === 'stats' && (

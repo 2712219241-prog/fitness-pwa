@@ -12,6 +12,7 @@ const records: DailyRecord[] = [
     strengthSets: [{ id: 's1', exerciseId: 'bench', bodyPart: 'chest', weight: 30, reps: 8, timestamp: '2026-06-16T10:00:00.000Z' }],
     climbEntries: [{ id: 'c1', durationMinutes: 35, notes: '坡度 12', timestamp: '2026-06-16T11:00:00.000Z' }],
     bodyMeasurement: { date: '2026-06-16', weightKg: 78.5, armCm: 35, waistCm: 86, updatedAt: '2026-06-16T09:00:00.000Z' },
+    dailyNote: '今天状态很好，卧推有进步。',
     updatedAt: '2026-06-16T11:00:00.000Z'
   }
 ];
@@ -23,6 +24,7 @@ describe('export helpers', () => {
     expect(csv).toContain('2026-06-16,力量,胸部,哑铃卧推,1,30,8,2026-06-16T10:00:00.000Z,,,,,');
     expect(csv).toContain('2026-06-16,爬坡,,,,,,,35,坡度 12,,,');
     expect(csv).toContain('2026-06-16,身体数据,,,,,,,,,78.5,35,86');
+    expect(csv).toContain('2026-06-16,每日想说的话,,,,,,,,,,,,今天状态很好，卧推有进步。');
   });
 
   it('round trips a json backup', () => {
