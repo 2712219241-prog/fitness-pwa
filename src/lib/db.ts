@@ -64,9 +64,18 @@ export function createFitnessRepository(dbName = 'fitness-pwa') {
     },
     async addExercise(name: string, bodyPart: BodyPart) {
       const now = new Date().toISOString();
+      const trimmedName = name.trim();
+      const existing = (await db.exercises.toArray()).find(
+        (exercise) => exercise.bodyPart === bodyPart && exercise.name === trimmedName && exercise.deletedAt !== null
+      );
+      if (existing) {
+        const restored = { ...existing, updatedAt: now, deletedAt: null };
+        await db.exercises.put(restored);
+        return restored;
+      }
       const exercise: Exercise = {
         id: id('ex-custom'),
-        name: name.trim(),
+        name: trimmedName,
         bodyPart,
         illustrationKey: 'custom',
         createdAt: now,

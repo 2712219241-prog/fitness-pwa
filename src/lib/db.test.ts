@@ -53,4 +53,18 @@ describe('fitness repository', () => {
     expect(exercises.some((exercise) => exercise.id === created.id)).toBe(false);
     repo.close();
   });
+
+  it('restores a soft deleted exercise when the same name is added again', async () => {
+    const repo = createFitnessRepository('fitness-test');
+    const created = await repo.addExercise('上斜卧推', 'chest');
+    await repo.deleteExercise(created.id);
+
+    const restored = await repo.addExercise('上斜卧推', 'chest');
+    const exercises = await repo.listExercises();
+
+    expect(restored.id).toBe(created.id);
+    expect(restored.deletedAt).toBeNull();
+    expect(exercises.some((exercise) => exercise.id === created.id)).toBe(true);
+    repo.close();
+  });
 });

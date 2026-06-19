@@ -166,7 +166,8 @@ describe('RecordPage', () => {
     expect(onAddExercise).toHaveBeenCalledWith('上斜卧推', 'chest');
   });
 
-  it('deletes an exercise from the current list', async () => {
+  it('does not delete an exercise when confirmation is cancelled', async () => {
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
     const onDeleteExercise = vi.fn();
     render(
       <RecordPage
@@ -187,6 +188,35 @@ describe('RecordPage', () => {
 
     await userEvent.click(screen.getByRole('button', { name: '删除哑铃卧推' }));
 
+    expect(confirmSpy).toHaveBeenCalled();
+    expect(onDeleteExercise).not.toHaveBeenCalled();
+    confirmSpy.mockRestore();
+  });
+
+  it('deletes an exercise from the current list after confirmation', async () => {
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
+    const onDeleteExercise = vi.fn();
+    render(
+      <RecordPage
+        date="2026-06-16"
+        exercises={DEFAULT_EXERCISES}
+        records={[]}
+        onDateChange={vi.fn()}
+        onAddStrengthSet={vi.fn()}
+        onDeleteStrengthSet={vi.fn()}
+        onAddClimbEntry={vi.fn()}
+        onSaveBodyMeasurement={vi.fn()}
+        onSaveDailyNote={vi.fn()}
+        onAddExercise={vi.fn()}
+        onDeleteExercise={onDeleteExercise}
+        maxDate="2026-06-18"
+      />
+    );
+
+    await userEvent.click(screen.getByRole('button', { name: '删除哑铃卧推' }));
+
+    expect(confirmSpy).toHaveBeenCalled();
     expect(onDeleteExercise).toHaveBeenCalledWith(DEFAULT_EXERCISES[0].id);
+    confirmSpy.mockRestore();
   });
 });

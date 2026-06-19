@@ -100,6 +100,12 @@ export function RecordPage({
     setNewExerciseName('');
   }
 
+  async function deleteCustomExercise(exercise: Exercise) {
+    const ok = window.confirm(`确定删除“${exercise.name}”吗？以前记录的数据会保留。`);
+    if (!ok) return;
+    await onDeleteExercise(exercise.id);
+  }
+
   return (
     <section className="page record-page">
       <header className="page-header">
@@ -182,7 +188,7 @@ export function RecordPage({
                 <h3>{exercise.name}</h3>
                 <p>{BODY_PARTS.find((part) => part.id === exercise.bodyPart)?.label}</p>
               </div>
-              <button className="exercise-delete-button" type="button" aria-label={`删除${exercise.name}`} onClick={() => void onDeleteExercise(exercise.id)}>
+              <button className="exercise-delete-button" type="button" aria-label={`删除${exercise.name}`} onClick={() => void deleteCustomExercise(exercise)}>
                 <Trash2 aria-hidden="true" size={16} />
               </button>
             </div>
