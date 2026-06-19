@@ -1,4 +1,4 @@
-import { CalendarDays, ChevronRight, Plus } from 'lucide-react';
+import { CalendarDays, ChevronRight, Plus, Trash2 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { IconTile } from '../components/IconTile';
 import { BODY_PARTS } from '../lib/defaultExercises';
@@ -15,6 +15,8 @@ interface RecordPageProps {
   onAddClimbEntry: (date: string, entry: Omit<ClimbEntry, 'id'>) => Promise<void> | void;
   onSaveBodyMeasurement: (measurement: BodyMeasurement) => Promise<void> | void;
   onSaveDailyNote: (date: string, dailyNote: string) => Promise<void> | void;
+  onAddExercise: (name: string, bodyPart: BodyPart) => Promise<void> | void;
+  onDeleteExercise: (exerciseId: string) => Promise<void> | void;
   maxDate: string;
 }
 
@@ -28,9 +30,12 @@ export function RecordPage({
   onAddClimbEntry,
   onSaveBodyMeasurement,
   onSaveDailyNote,
+  onAddExercise,
+  onDeleteExercise,
   maxDate
 }: RecordPageProps) {
   const [selectedPart, setSelectedPart] = useState<BodyPart>('chest');
+  const [newExerciseName, setNewExerciseName] = useState('');
   const [strengthDrafts, setStrengthDrafts] = useState<Record<string, { weight: string; reps: string }>>({});
   const [climbDuration, setClimbDuration] = useState('');
   const [climbNotes, setClimbNotes] = useState('');
@@ -88,6 +93,13 @@ export function RecordPage({
     await onSaveDailyNote(date, dailyNote);
   }
 
+  async function addCustomExercise() {
+    const name = newExerciseName.trim();
+    if (!name) return;
+    await onAddExercise(name, selectedPart);
+    setNewExerciseName('');
+  }
+
   return (
     <section className="page record-page">
       <header className="page-header">
@@ -141,6 +153,26 @@ export function RecordPage({
         ))}
       </div>
 
+      <section className="exercise-manager">
+        <div>
+          <h2>动作管理</h2>
+          <p>{BODY_PARTS.find((part) => part.id === selectedPart)?.label}动作</p>
+        </div>
+        <label>
+          <span>新增动作</span>
+          <input
+            aria-label="新增动作名称"
+            type="text"
+            placeholder="例如：上斜卧推"
+            value={newExerciseName}
+            onChange={(event) => setNewExerciseName(event.target.value)}
+          />
+        </label>
+        <button type="button" onClick={() => void addCustomExercise()}>
+          添加动作
+        </button>
+      </section>
+
       <section className="card-list">
         {selectedExercises.map((exercise) => (
           <article className="exercise-card" key={exercise.id}>
@@ -150,6 +182,9 @@ export function RecordPage({
                 <h3>{exercise.name}</h3>
                 <p>{BODY_PARTS.find((part) => part.id === exercise.bodyPart)?.label}</p>
               </div>
+              <button className="exercise-delete-button" type="button" aria-label={`删除${exercise.name}`} onClick={() => void onDeleteExercise(exercise.id)}>
+                <Trash2 aria-hidden="true" size={16} />
+              </button>
             </div>
             <div className="set-entry-grid">
               <label>

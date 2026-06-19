@@ -38,4 +38,19 @@ describe('fitness repository', () => {
     expect(records[0].dailyNote).toBe('今天状态很好，卧推有进步。');
     repo.close();
   });
+
+  it('adds and soft deletes a custom exercise', async () => {
+    const repo = createFitnessRepository('fitness-test');
+    const created = await repo.addExercise('上斜卧推', 'chest');
+    expect(created.name).toBe('上斜卧推');
+    expect(created.bodyPart).toBe('chest');
+
+    let exercises = await repo.listExercises();
+    expect(exercises.some((exercise) => exercise.id === created.id)).toBe(true);
+
+    await repo.deleteExercise(created.id);
+    exercises = await repo.listExercises();
+    expect(exercises.some((exercise) => exercise.id === created.id)).toBe(false);
+    repo.close();
+  });
 });

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { createFitnessRepository } from '../lib/db';
-import type { BodyMeasurement, ClimbEntry, DailyRecord, Exercise, StrengthSet } from '../lib/types';
+import type { BodyMeasurement, BodyPart, ClimbEntry, DailyRecord, Exercise, StrengthSet } from '../lib/types';
 
 const repository = createFitnessRepository();
 
@@ -40,6 +40,14 @@ export function useFitnessData() {
       },
       async saveDailyNote(date: string, dailyNote: string) {
         await repository.saveDailyNote(date, dailyNote);
+        await refresh();
+      },
+      async addExercise(name: string, bodyPart: BodyPart) {
+        await repository.addExercise(name, bodyPart);
+        await refresh();
+      },
+      async deleteExercise(exerciseId: string) {
+        await repository.deleteExercise(exerciseId);
         await refresh();
       },
       async replaceAll(nextExercises: Exercise[], nextRecords: DailyRecord[]) {

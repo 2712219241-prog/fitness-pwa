@@ -19,6 +19,8 @@ describe('RecordPage', () => {
         onAddClimbEntry={vi.fn()}
         onSaveBodyMeasurement={vi.fn()}
         onSaveDailyNote={vi.fn()}
+        onAddExercise={vi.fn()}
+        onDeleteExercise={vi.fn()}
         maxDate="2026-06-18"
       />
     );
@@ -43,6 +45,8 @@ describe('RecordPage', () => {
         onAddClimbEntry={vi.fn()}
         onSaveBodyMeasurement={vi.fn()}
         onSaveDailyNote={vi.fn()}
+        onAddExercise={vi.fn()}
+        onDeleteExercise={vi.fn()}
         maxDate="2026-06-18"
       />
     );
@@ -67,6 +71,8 @@ describe('RecordPage', () => {
         onAddClimbEntry={onAddClimbEntry}
         onSaveBodyMeasurement={vi.fn()}
         onSaveDailyNote={vi.fn()}
+        onAddExercise={vi.fn()}
+        onDeleteExercise={vi.fn()}
         maxDate="2026-06-18"
       />
     );
@@ -91,6 +97,8 @@ describe('RecordPage', () => {
         onAddClimbEntry={vi.fn()}
         onSaveBodyMeasurement={onSaveBodyMeasurement}
         onSaveDailyNote={vi.fn()}
+        onAddExercise={vi.fn()}
+        onDeleteExercise={vi.fn()}
         maxDate="2026-06-18"
       />
     );
@@ -121,6 +129,8 @@ describe('RecordPage', () => {
         onAddClimbEntry={vi.fn()}
         onSaveBodyMeasurement={vi.fn()}
         onSaveDailyNote={onSaveDailyNote}
+        onAddExercise={vi.fn()}
+        onDeleteExercise={vi.fn()}
         maxDate="2026-06-18"
       />
     );
@@ -129,5 +139,54 @@ describe('RecordPage', () => {
     await userEvent.click(screen.getByRole('button', { name: '保存想说的话' }));
 
     expect(onSaveDailyNote).toHaveBeenCalledWith('2026-06-16', '今天训练状态很好。');
+  });
+
+  it('adds a custom exercise to the selected body part', async () => {
+    const onAddExercise = vi.fn();
+    render(
+      <RecordPage
+        date="2026-06-16"
+        exercises={DEFAULT_EXERCISES}
+        records={[]}
+        onDateChange={vi.fn()}
+        onAddStrengthSet={vi.fn()}
+        onDeleteStrengthSet={vi.fn()}
+        onAddClimbEntry={vi.fn()}
+        onSaveBodyMeasurement={vi.fn()}
+        onSaveDailyNote={vi.fn()}
+        onAddExercise={onAddExercise}
+        onDeleteExercise={vi.fn()}
+        maxDate="2026-06-18"
+      />
+    );
+
+    await userEvent.type(screen.getByLabelText('新增动作名称'), '上斜卧推');
+    await userEvent.click(screen.getByRole('button', { name: '添加动作' }));
+
+    expect(onAddExercise).toHaveBeenCalledWith('上斜卧推', 'chest');
+  });
+
+  it('deletes an exercise from the current list', async () => {
+    const onDeleteExercise = vi.fn();
+    render(
+      <RecordPage
+        date="2026-06-16"
+        exercises={DEFAULT_EXERCISES}
+        records={[]}
+        onDateChange={vi.fn()}
+        onAddStrengthSet={vi.fn()}
+        onDeleteStrengthSet={vi.fn()}
+        onAddClimbEntry={vi.fn()}
+        onSaveBodyMeasurement={vi.fn()}
+        onSaveDailyNote={vi.fn()}
+        onAddExercise={vi.fn()}
+        onDeleteExercise={onDeleteExercise}
+        maxDate="2026-06-18"
+      />
+    );
+
+    await userEvent.click(screen.getByRole('button', { name: '删除哑铃卧推' }));
+
+    expect(onDeleteExercise).toHaveBeenCalledWith(DEFAULT_EXERCISES[0].id);
   });
 });

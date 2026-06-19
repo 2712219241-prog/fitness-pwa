@@ -257,6 +257,66 @@ select {
   gap: 10px;
 }
 
+.exercise-manager {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: end;
+  margin-bottom: 12px;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 10px 24px rgba(48, 43, 35, 0.08);
+  padding: 12px;
+}
+
+.exercise-manager > div {
+  grid-column: 1 / -1;
+}
+
+.exercise-manager h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.exercise-manager p {
+  margin: 4px 0 0;
+  color: #8f887e;
+  font-size: 13px;
+}
+
+.exercise-manager label {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.exercise-manager label span {
+  color: #8f887e;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.exercise-manager input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  border-radius: 12px;
+  background: #f8f6f1;
+  color: #15120f;
+  padding: 10px;
+  font-weight: 800;
+}
+
+.exercise-manager button {
+  border: 0;
+  border-radius: 14px;
+  background: #f47416;
+  color: #fff;
+  padding: 11px 12px;
+  font-weight: 880;
+  white-space: nowrap;
+}
+
 .exercise-card {
   display: grid;
   gap: 12px;
@@ -269,6 +329,18 @@ select {
 
 .exercise-card-top > div:nth-child(2) {
   flex: 1;
+  min-width: 0;
+}
+
+.exercise-delete-button {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 12px;
+  background: #f8f6f1;
+  color: #a75a32;
 }
 
 .set-entry-grid {

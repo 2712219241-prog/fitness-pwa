@@ -1,6 +1,6 @@
 import Dexie, { type Table } from 'dexie';
 import { DEFAULT_EXERCISES } from './defaultExercises';
-import type { BodyMeasurement, ClimbEntry, DailyRecord, Exercise, StrengthSet } from './types';
+import type { BodyMeasurement, BodyPart, ClimbEntry, DailyRecord, Exercise, StrengthSet } from './types';
 
 type NewStrengthSet = Omit<StrengthSet, 'id'>;
 type NewClimbEntry = Omit<ClimbEntry, 'id'>;
@@ -61,6 +61,28 @@ export function createFitnessRepository(dbName = 'fitness-pwa') {
     },
     async saveExercise(exercise: Exercise) {
       await db.exercises.put(exercise);
+    },
+    async addExercise(name: string, bodyPart: BodyPart) {
+      const now = new Date().toISOString();
+      const exercise: Exercise = {
+        id: id('ex-custom'),
+        name: name.trim(),
+        bodyPart,
+        illustrationKey: 'custom',
+        createdAt: now,
+        updatedAt: now,
+        deletedAt: null
+      };
+      await db.exercises.put(exercise);
+      return exercise;
+    },
+    async deleteExercise(exerciseId: string) {
+      const exercise = await db.exercises.get(exerciseId);
+      if (!exercise) return null;
+      const now = new Date().toISOString();
+      const next = { ...exercise, updatedAt: now, deletedAt: now };
+      await db.exercises.put(next);
+      return next;
     },
     async listDailyRecords() {
       return db.dailyRecords.orderBy('date').toArray();

@@ -38,6 +38,8 @@ export default function App() {
           onAddClimbEntry={actions.addClimbEntry}
           onSaveBodyMeasurement={actions.saveBodyMeasurement}
           onSaveDailyNote={actions.saveDailyNote}
+          onAddExercise={actions.addExercise}
+          onDeleteExercise={actions.deleteExercise}
           maxDate={today}
         />
       )}
