@@ -1,5 +1,5 @@
 import { CalendarDays, ChevronRight, Plus, Trash2 } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { IconTile } from '../components/IconTile';
 import { BODY_PARTS } from '../lib/defaultExercises';
 import { formatChineseDate } from '../lib/date';
@@ -44,6 +44,8 @@ export function RecordPage({
   const [waistCm, setWaistCm] = useState('');
   const record = records.find((item) => item.date === date);
   const [dailyNote, setDailyNote] = useState(record?.dailyNote ?? '');
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const toastTimer = useRef<number | null>(null);
   const strengthCount = record?.strengthSets.length ?? 0;
   const climbMinutes = record?.climbEntries.reduce((sum, entry) => sum + entry.durationMinutes, 0) ?? 0;
   const selectedExercises = useMemo(() => exercises.filter((exercise) => exercise.bodyPart === selectedPart), [exercises, selectedPart]);
@@ -51,6 +53,21 @@ export function RecordPage({
   useEffect(() => {
     setDailyNote(record?.dailyNote ?? '');
   }, [date, record?.dailyNote]);
+
+  useEffect(() => {
+    return () => {
+      if (toastTimer.current) window.clearTimeout(toastTimer.current);
+    };
+  }, []);
+
+  function showToast(message: string) {
+    if (toastTimer.current) window.clearTimeout(toastTimer.current);
+    setToastMessage(message);
+    toastTimer.current = window.setTimeout(() => {
+      setToastMessage(null);
+      toastTimer.current = null;
+    }, 500);
+  }
 
   async function quickAddSet(exercise: Exercise) {
     const draft = strengthDrafts[exercise.id] ?? { weight: '', reps: '' };
@@ -65,6 +82,7 @@ export function RecordPage({
       timestamp: new Date().toISOString()
     });
     setStrengthDrafts((current) => ({ ...current, [exercise.id]: { weight: '', reps: '' } }));
+    showToast('保存成功');
   }
 
   async function saveClimb() {
@@ -77,6 +95,7 @@ export function RecordPage({
     });
     setClimbDuration('');
     setClimbNotes('');
+    showToast('保存成功');
   }
 
   async function saveBodyData() {
@@ -87,10 +106,12 @@ export function RecordPage({
       waistCm: waistCm === '' ? null : Number(waistCm),
       updatedAt: new Date().toISOString()
     });
+    showToast('保存成功');
   }
 
   async function saveDailyNoteText() {
     await onSaveDailyNote(date, dailyNote);
+    showToast('保存成功');
   }
 
   async function addCustomExercise() {
@@ -98,16 +119,23 @@ export function RecordPage({
     if (!name) return;
     await onAddExercise(name, selectedPart);
     setNewExerciseName('');
+    showToast('保存成功');
   }
 
   async function deleteCustomExercise(exercise: Exercise) {
     const ok = window.confirm(`确定删除“${exercise.name}”吗？以前记录的数据会保留。`);
     if (!ok) return;
     await onDeleteExercise(exercise.id);
+    showToast('删除成功');
   }
 
   return (
     <section className="page record-page">
+      {toastMessage ? (
+        <div className="feedback-toast" role="status" aria-live="polite">
+          {toastMessage}
+        </div>
+      ) : null}
       <header className="page-header">
         <h1>记录</h1>
       </header>
@@ -227,8 +255,9 @@ export function RecordPage({
                   }
                 />
               </label>
-              <button type="button" aria-label={`添加${exercise.name}一组`} onClick={() => void quickAddSet(exercise)}>
+              <button className="save-set-button" type="button" onClick={() => void quickAddSet(exercise)}>
                 <Plus aria-hidden="true" size={18} />
+                <span>保存记录</span>
               </button>
             </div>
             <div className="set-list">

@@ -39,6 +39,24 @@ select {
   padding: 20px 18px 104px;
 }
 
+.feedback-toast {
+  position: fixed;
+  left: 50%;
+  top: max(18px, env(safe-area-inset-top));
+  z-index: 30;
+  transform: translateX(-50%);
+  min-width: 118px;
+  max-width: min(320px, calc(100% - 40px));
+  border-radius: 999px;
+  background: rgba(21, 18, 15, 0.9);
+  color: #fff;
+  padding: 10px 16px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 850;
+  box-shadow: 0 12px 28px rgba(21, 18, 15, 0.18);
+}
+
 .page-header {
   display: flex;
   align-items: center;
@@ -345,7 +363,7 @@ select {
 
 .set-entry-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 42px;
+  grid-template-columns: 1fr 1fr minmax(92px, auto);
   gap: 8px;
   align-items: end;
 }
@@ -380,14 +398,20 @@ select {
 }
 
 .set-entry-grid button {
-  display: grid;
-  place-items: center;
-  width: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 92px;
   height: 42px;
   border: 1px solid #f2a15a;
-  border-radius: 50%;
+  border-radius: 14px;
   color: #f47416;
   background: #fff;
+  padding: 0 10px;
+  font-size: 13px;
+  font-weight: 850;
+  white-space: nowrap;
 }
 
 .exercise-art {

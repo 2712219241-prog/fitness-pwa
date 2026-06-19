@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { DEFAULT_EXERCISES } from '../lib/defaultExercises';
@@ -32,7 +32,7 @@ describe('RecordPage', () => {
     expect(screen.getByRole('heading', { name: '每日想说的话' })).toBeInTheDocument();
   });
 
-  it('submits weight and reps for a strength set', async () => {
+  it('submits weight and reps for a strength set and shows a success toast', async () => {
     const onAddStrengthSet = vi.fn();
     render(
       <RecordPage
@@ -53,9 +53,11 @@ describe('RecordPage', () => {
 
     await userEvent.type(screen.getByLabelText('哑铃卧推重量'), '30');
     await userEvent.type(screen.getByLabelText('哑铃卧推次数'), '8');
-    await userEvent.click(screen.getByRole('button', { name: '添加哑铃卧推一组' }));
+    await userEvent.click(screen.getAllByRole('button', { name: '保存记录' })[0]);
 
     expect(onAddStrengthSet).toHaveBeenCalledWith('2026-06-16', expect.objectContaining({ weight: 30, reps: 8 }));
+    expect(screen.getByText('保存成功')).toBeInTheDocument();
+    await waitForElementToBeRemoved(() => screen.queryByText('保存成功'), { timeout: 1000 });
   });
 
   it('submits climb duration and notes', async () => {
@@ -193,7 +195,7 @@ describe('RecordPage', () => {
     confirmSpy.mockRestore();
   });
 
-  it('deletes an exercise from the current list after confirmation', async () => {
+  it('deletes an exercise from the current list after confirmation and shows a success toast', async () => {
     const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
     const onDeleteExercise = vi.fn();
     render(
@@ -217,6 +219,8 @@ describe('RecordPage', () => {
 
     expect(confirmSpy).toHaveBeenCalled();
     expect(onDeleteExercise).toHaveBeenCalledWith(DEFAULT_EXERCISES[0].id);
+    expect(screen.getByText('删除成功')).toBeInTheDocument();
+    await waitForElementToBeRemoved(() => screen.queryByText('删除成功'), { timeout: 1000 });
     confirmSpy.mockRestore();
   });
 });
