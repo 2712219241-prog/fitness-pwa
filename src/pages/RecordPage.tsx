@@ -36,7 +36,7 @@ export function RecordPage({
 }: RecordPageProps) {
   const [selectedPart, setSelectedPart] = useState<BodyPart>('chest');
   const [newExerciseName, setNewExerciseName] = useState('');
-  const [strengthDrafts, setStrengthDrafts] = useState<Record<string, { weight: string; reps: string }>>({});
+  const [strengthDrafts, setStrengthDrafts] = useState<Record<string, { weight: string; reps: string; sets: string }>>({});
   const [climbDuration, setClimbDuration] = useState('');
   const [climbNotes, setClimbNotes] = useState('');
   const [weightKg, setWeightKg] = useState('');
@@ -70,18 +70,21 @@ export function RecordPage({
   }
 
   async function quickAddSet(exercise: Exercise) {
-    const draft = strengthDrafts[exercise.id] ?? { weight: '', reps: '' };
+    const draft = strengthDrafts[exercise.id] ?? { weight: '', reps: '', sets: '1' };
     const weight = Number(draft.weight);
     const reps = Number(draft.reps);
-    if (!Number.isFinite(weight) || !Number.isFinite(reps) || weight <= 0 || reps <= 0) return;
-    await onAddStrengthSet(date, {
-      exerciseId: exercise.id,
-      bodyPart: exercise.bodyPart,
-      weight,
-      reps,
-      timestamp: new Date().toISOString()
-    });
-    setStrengthDrafts((current) => ({ ...current, [exercise.id]: { weight: '', reps: '' } }));
+    const setCount = Number(draft.sets);
+    if (!Number.isFinite(weight) || !Number.isFinite(reps) || !Number.isFinite(setCount) || weight <= 0 || reps <= 0 || setCount <= 0) return;
+    for (let index = 0; index < Math.floor(setCount); index += 1) {
+      await onAddStrengthSet(date, {
+        exerciseId: exercise.id,
+        bodyPart: exercise.bodyPart,
+        weight,
+        reps,
+        timestamp: new Date().toISOString()
+      });
+    }
+    setStrengthDrafts((current) => ({ ...current, [exercise.id]: { weight: draft.weight, reps: draft.reps, sets: '1' } }));
     showToast('保存成功');
   }
 
@@ -233,7 +236,7 @@ export function RecordPage({
                   onChange={(event) =>
                     setStrengthDrafts((current) => ({
                       ...current,
-                      [exercise.id]: { weight: event.target.value, reps: current[exercise.id]?.reps ?? '' }
+                      [exercise.id]: { weight: event.target.value, reps: current[exercise.id]?.reps ?? '', sets: current[exercise.id]?.sets ?? '1' }
                     }))
                   }
                 />
@@ -250,7 +253,24 @@ export function RecordPage({
                   onChange={(event) =>
                     setStrengthDrafts((current) => ({
                       ...current,
-                      [exercise.id]: { weight: current[exercise.id]?.weight ?? '', reps: event.target.value }
+                      [exercise.id]: { weight: current[exercise.id]?.weight ?? '', reps: event.target.value, sets: current[exercise.id]?.sets ?? '1' }
+                    }))
+                  }
+                />
+              </label>
+              <label>
+                <span>组数</span>
+                <input
+                  aria-label={`${exercise.name}组数`}
+                  inputMode="numeric"
+                  type="number"
+                  min="1"
+                  placeholder="组"
+                  value={strengthDrafts[exercise.id]?.sets ?? '1'}
+                  onChange={(event) =>
+                    setStrengthDrafts((current) => ({
+                      ...current,
+                      [exercise.id]: { weight: current[exercise.id]?.weight ?? '', reps: current[exercise.id]?.reps ?? '', sets: event.target.value }
                     }))
                   }
                 />

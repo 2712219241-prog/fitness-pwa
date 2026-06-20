@@ -363,7 +363,7 @@ select {
 
 .set-entry-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr minmax(92px, auto);
+  grid-template-columns: repeat(3, 1fr);
   gap: 8px;
   align-items: end;
 }
@@ -412,6 +412,11 @@ select {
   font-size: 13px;
   font-weight: 850;
   white-space: nowrap;
+}
+
+.save-set-button {
+  grid-column: 1 / -1;
+  width: 100%;
 }
 
 .exercise-art {

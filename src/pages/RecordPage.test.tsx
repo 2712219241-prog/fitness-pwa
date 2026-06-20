@@ -32,7 +32,7 @@ describe('RecordPage', () => {
     expect(screen.getByRole('heading', { name: '每日想说的话' })).toBeInTheDocument();
   });
 
-  it('submits weight and reps for a strength set and shows a success toast', async () => {
+  it('submits multiple strength sets and keeps weight and reps available', async () => {
     const onAddStrengthSet = vi.fn();
     render(
       <RecordPage
@@ -53,9 +53,17 @@ describe('RecordPage', () => {
 
     await userEvent.type(screen.getByLabelText('哑铃卧推重量'), '30');
     await userEvent.type(screen.getByLabelText('哑铃卧推次数'), '8');
+    await userEvent.clear(screen.getByLabelText('哑铃卧推组数'));
+    await userEvent.type(screen.getByLabelText('哑铃卧推组数'), '3');
     await userEvent.click(screen.getAllByRole('button', { name: '保存记录' })[0]);
 
-    expect(onAddStrengthSet).toHaveBeenCalledWith('2026-06-16', expect.objectContaining({ weight: 30, reps: 8 }));
+    expect(onAddStrengthSet).toHaveBeenCalledTimes(3);
+    expect(onAddStrengthSet).toHaveBeenNthCalledWith(1, '2026-06-16', expect.objectContaining({ weight: 30, reps: 8 }));
+    expect(onAddStrengthSet).toHaveBeenNthCalledWith(2, '2026-06-16', expect.objectContaining({ weight: 30, reps: 8 }));
+    expect(onAddStrengthSet).toHaveBeenNthCalledWith(3, '2026-06-16', expect.objectContaining({ weight: 30, reps: 8 }));
+    expect(screen.getByLabelText('哑铃卧推重量')).toHaveValue(30);
+    expect(screen.getByLabelText('哑铃卧推次数')).toHaveValue(8);
+    expect(screen.getByLabelText('哑铃卧推组数')).toHaveValue(1);
     expect(screen.getByText('保存成功')).toBeInTheDocument();
     await waitForElementToBeRemoved(() => screen.queryByText('保存成功'), { timeout: 1000 });
   });
